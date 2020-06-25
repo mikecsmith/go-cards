@@ -2,6 +2,11 @@ package main
 
 func main() {
 	cards := newDeck()
+	shuffledCards := cards.shuffle()
 
-	cards.print()
+	hand, deck := shuffledCards.deal(5)
+
+	hand.print()
+	deck.print()
+
 }

@@ -35,15 +35,9 @@ func (d deck) print() {
 }
 
 // Deals n cards
-func (d deck) deal(handSize int) deck {
-	// Seed the rand function so it does not always return the same values
-	rand.Seed(time.Now().UnixNano())
-
-	// Define the startNumber for the deck by generating a random number in the range 0 to the length of the deck, minus the length of the handSize
-	startNumber := rand.Intn(len(d) - handSize)
-
-	// Return a range from the deck, starting at the startNumber and ending at the startNumber + the handSize
-	return d[startNumber : startNumber+handSize]
+func (d deck) deal(handSize int) (deck, deck) {
+	// Return the hand and remaining deck
+	return d[:handSize], d[handSize:]
 }
 
 // Shuffle the deck
@@ -51,7 +45,8 @@ func (d deck) shuffle() deck {
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
 
-	// rand.Shuffle accepts an integer which represents the number of elements to shuffle and a swap function that swaps the values of i & j - note: the swap function mutates d
+	// rand.Shuffle accepts an integer which represents the number of elements to shuffle and a swap function that swaps the values of i & j
+	// note: the swap function mutates d
 	rand.Shuffle(len(d), func(i, j int) {
 		d[i], d[j] = d[j], d[i]
 	})
