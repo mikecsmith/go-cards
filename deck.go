@@ -45,12 +45,12 @@ func (d deck) deal(handSize int) (deck, deck) {
 }
 
 // Utility function to join a deck into a string and then typecast to a byte slice
-func deckToString(d deck) []byte {
+func (d deck) toByteString() []byte {
 	return []byte(strings.Join(d, ","))
 }
 
 // Utility function to convert a deck in a byte slice JSON
-func deckToJSON(d deck) []byte {
+func (d deck) toJSON() []byte {
 	// Marshal is the function to convert a data structure into a JSON byte slice (ASCII conversion)
 	// It returns a byte slice json string and an error
 	b, err := json.Marshal(d)
@@ -74,7 +74,8 @@ func readDeckFromFile(filename string) deck {
 	if r.MatchString(filename) {
 		// Declare an empty variable of type deck
 		var d deck
-		// Unmarshal the json - unmarshal takes a byte slice and a pointer to a variable then typecasts the json into that type - or errors if the type is not suitable
+		// Unmarshal the json - unmarshal takes a byte slice and a pointer to a variable then typecasts the json
+		// into that type and stores it in the variable - or errors if the type is not suitable
 		err := json.Unmarshal(b, &d)
 		// Check error and panic if not nil
 		check(err)
