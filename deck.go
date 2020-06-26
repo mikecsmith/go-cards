@@ -100,7 +100,7 @@ func (d deck) saveToFile(filename string) error {
 }
 
 // Shuffle the deck
-func (d deck) shuffle() deck {
+func (d deck) shuffle() {
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
 
@@ -109,7 +109,4 @@ func (d deck) shuffle() deck {
 	rand.Shuffle(len(d), func(i, j int) {
 		d[i], d[j] = d[j], d[i]
 	})
-
-	// return the shuffled deck
-	return d
 }
