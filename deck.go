@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -58,6 +59,30 @@ func deckToJSON(d deck) []byte {
 	check(err)
 
 	return b
+}
+
+// Function to read the deck from a file
+func readDeckFromFile(filename string) deck {
+	// ReadFile ioutil method - returns a byte slice and an error
+	b, err := ioutil.ReadFile(filename)
+	// Check the error - panic if error not nil
+	check(err)
+
+	// Compile a regexp object to check for files of type .json
+	r := regexp.MustCompile(".*?\\.json")
+	// Check to see if the filename is of type json
+	if r.MatchString(filename) {
+		// Declare an empty variable of type deck
+		var d deck
+		// Unmarshal the json - unmarshal takes a byte slice and a pointer to a variable then typecasts the json into that type - or errors if the type is not suitable
+		err := json.Unmarshal(b, &d)
+		// Check error and panic if not nil
+		check(err)
+		// return the json decoded deck
+		return d
+	}
+	// If deck is not saved as a JSON assume deck is saved as comma delimited string, split the string into a []string then typecast to a deck
+	return deck(strings.Split(string(b), ","))
 }
 
 // Save a deck to a JSON file
