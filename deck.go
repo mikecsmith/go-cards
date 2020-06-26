@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -42,9 +43,21 @@ func (d deck) deal(handSize int) (deck, deck) {
 	return d[:handSize], d[handSize:]
 }
 
-// Save the deck to file
-func saveDeckToFile(d deck) {
-	// Marshal is the function to convert a data structure into a JSON byte slice
+// Save a deck to a txt file
+func saveDeckToFileString(d deck) {
+	// Take the deck and use the Join method from the strings standard library to join the deck into a single string using comma as delimiter
+	stringifiedDeck := strings.Join(d, ",")
+	// Typecast the stringifiedDeck into a byte slice
+	byteDeck := []byte(stringifiedDeck)
+	// Write the deck out to deck.txt
+	err := ioutil.WriteFile("./deck.txt", byteDeck, 0644)
+	// Check to see if error returned from WriteFile and panic if error present
+	check(err)
+}
+
+// Save a deck to a JSON file
+func saveDeckToFileJSON(d deck) {
+	// Marshal is the function to convert a data structure into a JSON byte slice (ASCII conversion)
 	// It returns a byte slice json string and an error
 	b, err := json.Marshal(d)
 	// Utility function defined in utils.go - checks for an error in JSON conversion and panics if one is present
@@ -53,7 +66,7 @@ func saveDeckToFile(d deck) {
 	// Writes the deck to /tmp/deck
 	err2 := ioutil.WriteFile("./deck.json", b, 0644)
 
-	//checks to see if error returned from WriteFile
+	// Check to see if error returned from WriteFile and panic if error present
 	check(err2)
 }
 
