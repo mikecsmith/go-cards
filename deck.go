@@ -43,31 +43,30 @@ func (d deck) deal(handSize int) (deck, deck) {
 	return d[:handSize], d[handSize:]
 }
 
-// Save a deck to a txt file
-func saveDeckToFileString(d deck) {
-	// Take the deck and use the Join method from the strings standard library to join the deck into a single string using comma as delimiter
-	stringifiedDeck := strings.Join(d, ",")
-	// Typecast the stringifiedDeck into a byte slice
-	byteDeck := []byte(stringifiedDeck)
-	// Write the deck out to deck.txt
-	err := ioutil.WriteFile("./deck.txt", byteDeck, 0644)
-	// Check to see if error returned from WriteFile and panic if error present
-	check(err)
+// Utility function to join a deck into a string and then typecast to a byte slice
+func deckToString(d deck) []byte {
+	return []byte(strings.Join(d, ","))
 }
 
-// Save a deck to a JSON file
-func saveDeckToFileJSON(d deck) {
+// Utility function to convert a deck in a byte slice JSON
+func deckToJSON(d deck) []byte {
 	// Marshal is the function to convert a data structure into a JSON byte slice (ASCII conversion)
 	// It returns a byte slice json string and an error
 	b, err := json.Marshal(d)
+
 	// Utility function defined in utils.go - checks for an error in JSON conversion and panics if one is present
 	check(err)
 
-	// Writes the deck to /tmp/deck
-	err2 := ioutil.WriteFile("./deck.json", b, 0644)
+	return b
+}
+
+// Save a deck to a JSON file
+func saveDeckToFile(filename string, b []byte) {
+	// Writes the deck to the specified filename in the current dir
+	err := ioutil.WriteFile("./"+filename, b, 0644)
 
 	// Check to see if error returned from WriteFile and panic if error present
-	check(err2)
+	check(err)
 }
 
 // Shuffle the deck
