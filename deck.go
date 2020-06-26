@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"time"
 )
@@ -38,6 +40,21 @@ func (d deck) print() {
 func (d deck) deal(handSize int) (deck, deck) {
 	// Return the hand and remaining deck
 	return d[:handSize], d[handSize:]
+}
+
+// Save the deck to file
+func saveDeckToFile(d deck) {
+	// Marshal is the function to convert a data structure into a JSON byte slice
+	// It returns a byte slice json string and an error
+	b, err := json.Marshal(d)
+	// Utility function defined in utils.go - checks for an error in JSON conversion and panics if one is present
+	check(err)
+
+	// Writes the deck to /tmp/deck
+	err2 := ioutil.WriteFile("./deck.json", b, 0644)
+
+	//checks to see if error returned from WriteFile
+	check(err2)
 }
 
 // Shuffle the deck
