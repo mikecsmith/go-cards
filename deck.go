@@ -15,6 +15,9 @@ import (
 
 type deck []string
 
+// Compile a regexp object to check for files of type .json
+var r = regexp.MustCompile(".*?\\.json")
+
 // Creates a new deck
 func newDeck() deck {
 	var cards deck
@@ -45,8 +48,8 @@ func (d deck) deal(handSize int) (deck, deck) {
 }
 
 // Utility function to join a deck into a string and then typecast to a byte slice
-func (d deck) toByteString() []byte {
-	return []byte(strings.Join(d, ","))
+func (d deck) toString() string {
+	return strings.Join(d, ",")
 }
 
 // Utility function to convert a deck in a byte slice JSON
@@ -62,14 +65,12 @@ func (d deck) toJSON() []byte {
 }
 
 // Function to read the deck from a file
-func readDeckFromFile(filename string) deck {
+func loadDeckFromFile(filename string) deck {
 	// ReadFile ioutil method - returns a byte slice and an error
 	b, err := ioutil.ReadFile(filename)
 	// Check the error - panic if error not nil
 	check(err)
 
-	// Compile a regexp object to check for files of type .json
-	r := regexp.MustCompile(".*?\\.json")
 	// Check to see if the filename is of type json
 	if r.MatchString(filename) {
 		// Declare an empty variable of type deck
@@ -87,7 +88,14 @@ func readDeckFromFile(filename string) deck {
 }
 
 // Save a deck to a JSON file
-func saveDeckToFile(filename string, b []byte) {
+func (d deck) saveToFile(filename string) {
+	var b []byte
+	// Check if file is json using global regex - convert to json if true or byte slice string if false
+	if r.MatchString(filename) {
+		b = d.toJSON()
+	} else {
+		b = []byte(d.toString())
+	}
 	// Writes the deck to the specified filename in the current dir
 	err := ioutil.WriteFile("./"+filename, b, 0644)
 
